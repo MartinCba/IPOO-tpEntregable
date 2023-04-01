@@ -11,6 +11,11 @@ class Viaje
     // passengers[x] = ["numero de documento" => $DniNumber, "nombre" => $name, "apellido" => $lastName];
 
     // CONSTRUCTOR
+    /**
+     * @param int $codigoNuevo
+     * @param string $destinoNuevo
+     * @param int $cantMax
+     */
     public function __construct($newCode, $newDestination, $ability)
     {
         $this->passengers = [];
@@ -25,17 +30,19 @@ class Viaje
         $this->destination = $newDestination;
     }
 
-    // NO SE DEBERÍA MODIFICAR EL CÓDIGO DE UN VIAJE YA QUE SE ASUME QUE ES ÚNICO
-    // (En tal caso se debe borrar y crear un viaje nuevo)
-    /*
-    public function setCode($newCode){
-        $this -> code = $newCode;
-    }
-    */
-
     public function setPassengers($passengersArray)
     {
-        $this->passengers = $passengersArray;
+        if (count($passengersArray) > $this->maxQuantity) {
+            $addable = false;
+        } else {
+            $addable = true;
+            $this->passengers = $passengersArray;
+        }
+        return $addable;
+    }
+    public function setMaxQuantity($max)
+    {
+        $this->maxQuantity = $max;
     }
 
     // OBSERVADORES
@@ -61,23 +68,46 @@ class Viaje
 
     // PROPIAS DE TIPO
     /**
-     * Si hay espacio en el viaje agrega un nuevo pasajero
-     * Retorna true si es posible, false en caso contrario
+     * Retorna un string con todos los elementos que componen al viaje
+     * @return string
+     */
+    public function __toString()
+    {
+        $showTrip = "- ";
+        $showTrip = "- Codigo: " . $this->code . "\n" .
+            $showTrip = $showTrip . "Destino: " . $this->destination . "\n" .
+            $showTrip = $showTrip . "Cantidad máxima del viaje: " . $this->maxQuantity . "\n" .
+            $showTrip = $showTrip . "Lista de pasajeros del viaje: \n";
+
+        for ($i = 0; $i < count($this->passengers); $i++) {
+            $dniNumber = $this->passengers[$i]["numero de documento"];
+            $name = $this->passengers[$i]["nombre"];
+            $lastName = $this->passengers[$i]["apellido"];
+            $showTrip = $showTrip . "Pasajero " . $i + 1 . ": [Documento: " . $dniNumber . ", Nombre: " . $name . ", Apellido: " . $lastName . "]\n";
+        }
+        return $showTrip;
+    }
+    /**
+     * Si hay espacio en el viaje y no existe previamente el documento del pasajero a ingresar,
+     * entonces se agrega el nuevo pasajero
+     * Retorna un string que indica si se agrego el pasajero exitosamente
+     * o cual fue el error por el cual no se pudo agregar
      * @param array $newPassenger
-     * @return boolean
+     * @return string
      */
     public function addPassenger($newPassenger)
     {
-        // boolean $addable
-
         if (count($this->passengers) == $this->maxQuantity) {
-            $addable = false;
+            $message = "Límite máximo de pasajeros alcanzado\n";
         } else {
-            $addable = true;
-            array_push($this->passengers, $newPassenger);
+            if ($this->searchPassengerByDni($newPassenger["numero de documento"]) != -1) {
+                $message = "Documento ya existente en el viaje\n";
+            } else {
+                $message = "Pasajero agregado exitosamente!\n";
+                array_push($this->passengers, $newPassenger);
+            }
         }
-
-        return $addable;
+        return $message;
     }
 
     /**
@@ -98,7 +128,7 @@ class Viaje
         } else {
             $removable = true;
             unset($this->passengers[$passengerPosition]);
-            array_values($this->passengers);
+            $this->passengers = array_values($this->passengers);
         }
         return $removable;
     }
@@ -148,6 +178,12 @@ class Viaje
         }
         return $modifiable;
     }
+    /**
+     * Busca un pasajero por número de documento, si existe retorna su posición
+     * si no existe retorna -1
+     * @param $dniNumber
+     * @return int
+     */
 
     private function searchPassengerByDni($dniNumber)
     {
@@ -160,6 +196,7 @@ class Viaje
         while ($exists == false && $passengerPosition < count($this->passengers)) {
             if ($dniNumber == $this->passengers[$passengerPosition]["numero de documento"]) {
                 $exists = true;
+                $passengerPosition--;
             }
             $passengerPosition++;
         }
@@ -169,7 +206,4 @@ class Viaje
 
         return $passengerPosition;
     }
-
-    // NO SE DEBERÍA MODIFICAR EL DNI DE UN PASAJERO YA QUE SE ASUME QUE ES ÚNICO
-    // (En tal caso se debe borrar y crear un pasajero nuevo)
 }
