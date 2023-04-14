@@ -3,207 +3,154 @@
 class Viaje
 {
     // ATRIBUTOS
-    private $passengers;
-    private $code;
-    private $destination;
-    private $maxQuantity;
-    // Composición del arreglo de passengers
-    // passengers[x] = ["numero de documento" => $DniNumber, "nombre" => $name, "apellido" => $lastName];
+    private $codigo;
+    private $destino;
+    private $cantMaxPasajeros;
+    private $pasajeros;
+    // Composición del arreglo de pasajeros
+    // pasajeros[x] = ["numero de documento" => $nroDni, "nombre" => $nombre, "apellido" => $apellido];
 
     // CONSTRUCTOR
-    /**
-     * @param int $codigoNuevo
-     * @param string $destinoNuevo
-     * @param int $cantMax
-     */
-    public function __construct($newCode, $newDestination, $ability)
+    public function __construct($codigoNuevo, $destinoNuevo, $cantMax)
     {
-        $this->passengers = [];
-        $this->code = $newCode;
-        $this->destination = $newDestination;
-        $this->maxQuantity = $ability;
+        $this->codigo = $codigoNuevo;
+        $this->destino = $destinoNuevo;
+        $this->cantMaxPasajeros = $cantMax;
+        $this->pasajeros = [];
     }
 
     // MODIFICADORES
-    public function setDestination($newDestination)
+    public function setCodigo($codigoNuevo)
     {
-        $this->destination = $newDestination;
+        $this->codigo = $codigoNuevo;
     }
-
-    public function setPassengers($passengersArray)
+    public function setDestino($destinoNuevo)
     {
-        if (count($passengersArray) > $this->maxQuantity) {
-            $addable = false;
-        } else {
-            $addable = true;
-            $this->passengers = $passengersArray;
-        }
-        return $addable;
+        $this->destino = $destinoNuevo;
     }
-    public function setMaxQuantity($max)
+    public function setCantMaxPasajeros($cantMaxima)
     {
-        $this->maxQuantity = $max;
+        $this->cantMaxPasajeros = $cantMaxima;
+    }
+    public function setPasajeros($arregloPasajeros)
+    {
+        $this->pasajeros = $arregloPasajeros;
     }
 
     // OBSERVADORES
-    public function getDestination()
+    public function getCodigo()
     {
-        return $this->destination;
+        return $this->codigo;
     }
-
-    public function getCode()
+    public function getDestino()
     {
-        return $this->code;
+        return $this->destino;
     }
-
-    public function getPassengers()
+    public function getCantMaxPasajeros()
     {
-        return $this->passengers;
+        return $this->cantMaxPasajeros;
     }
-
-    public function getMaxQuantity()
+    public function getPasajeros()
     {
-        return $this->maxQuantity;
+        return $this->pasajeros;
     }
 
     // PROPIAS DE TIPO
-    /**
-     * Retorna un string con todos los elementos que componen al viaje
-     * @return string
-     */
+
     public function __toString()
     {
-        $showTrip = "- ";
-        $showTrip = "- Codigo: " . $this->code . "\n" .
-            $showTrip = $showTrip . "Destino: " . $this->destination . "\n" .
-            $showTrip = $showTrip . "Cantidad máxima del viaje: " . $this->maxQuantity . "\n" .
-            $showTrip = $showTrip . "Lista de pasajeros del viaje: \n";
+        $viaje = "Código de viaje: " . $this->getCodigo() . "\n";
+        $viaje = $viaje . "Destino de viaje: " . $this->getDestino() . "\n";
+        $viaje = $viaje . "Cantidad máxima de pasajeros para este viaje: " . $this->getCantMaxPasajeros() . "\n";
+        $viaje = $viaje . "Información de los pasajeros del viaje: \n";
+        $viaje = $viaje . $this->pasajerosAString();
 
-        for ($i = 0; $i < count($this->passengers); $i++) {
-            $dniNumber = $this->passengers[$i]["numero de documento"];
-            $name = $this->passengers[$i]["nombre"];
-            $lastName = $this->passengers[$i]["apellido"];
-            $showTrip = $showTrip . "Pasajero " . $i + 1 . ": [Documento: " . $dniNumber . ", Nombre: " . $name . ", Apellido: " . $lastName . "]\n";
-        }
-        return $showTrip;
+        return $viaje;
     }
-    /**
-     * Si hay espacio en el viaje y no existe previamente el documento del pasajero a ingresar,
-     * entonces se agrega el nuevo pasajero
-     * Retorna un string que indica si se agrego el pasajero exitosamente
-     * o cual fue el error por el cual no se pudo agregar
-     * @param array $newPassenger
-     * @return string
-     */
-    public function addPassenger($newPassenger)
+
+    public function pasajerosAString()
     {
-        if (count($this->passengers) == $this->maxQuantity) {
-            $message = "Límite máximo de pasajeros alcanzado\n";
+        $cadenaPasajeros = "";
+
+        for ($i = 0; $i < count($this->getPasajeros()); $i++) {
+            $documento = $this->getPasajeros()[$i]["numero de documento"];
+            $nombre = $this->getPasajeros()[$i]["nombre"];
+            $apellido = $this->getPasajeros()[$i]["apellido"];
+            $cadenaPasajeros = $cadenaPasajeros . "Pasajero " . $i + 1 . ": [Documento: " . $documento . ", Nombre: " . $nombre . ", Apellido: " . $apellido . "]\n";
+        }
+        return $cadenaPasajeros;
+    }
+
+    public function agregarPasajero($nuevoPasajero)
+    {
+        if (count($this->getPasajeros()) == $this->getCantMaxPasajeros()) {
+            $exito = false;
         } else {
-            if ($this->searchPassengerByDni($newPassenger["numero de documento"]) != -1) {
-                $message = "Documento ya existente en el viaje\n";
+            if ($this->buscaPasajero($nuevoPasajero["numero de documento"]) != -1) {
+                $exito = false;
             } else {
-                $message = "Pasajero agregado exitosamente!\n";
-                array_push($this->passengers, $newPassenger);
+                $exito = true;
+                array_push($this->pasajeros, $nuevoPasajero);
             }
         }
-        return $message;
+        return $exito;
     }
 
-    /**
-     * Recibe el dni del pasajero a quitar
-     * Retorna true si es posible, false en caso contrario
-     * @param int $removeDni
-     * @return boolean
-     */
-    public function removePassengerByDni($removeDni)
+    public function quitarPasajeroPorDocumento($documentoQuitar)
     {
-        // int $passengerPosition
-        // boolean $removable
+        $posPasajero = $this->buscaPasajero($documentoQuitar);
 
-        $passengerPosition = $this->searchPassengerByDni($removeDni);
-
-        if ($passengerPosition == -1) {
-            $removable = false;
+        if ($posPasajero == -1) {
+            $puedeQuitar = false;
         } else {
-            $removable = true;
-            unset($this->passengers[$passengerPosition]);
-            $this->passengers = array_values($this->passengers);
+            $puedeQuitar = true;
+            unset($this->pasajeros[$posPasajero]);
+            $this->pasajeros = array_values($this->pasajeros);
         }
-        return $removable;
+        return $puedeQuitar;
     }
 
-    /**
-     * Modifica el nombre de un pasajero por su número de DNI
-     * Retorna true si es posible, false en caso contrario
-     * @param int $dniNumber
-     * @param string $newName
-     * @return boolean
-     */
-    public function modifyNameByDni($dniNumber, $newName)
+    public function modificarNombrePorDocumento($nroDocumento, $nombreNuevo)
     {
-        // int $passengerPosition
-        // boolean $modifiable
+        $posPasajero = $this->buscaPasajero($nroDocumento);
 
-        $passengerPosition = $this->searchPassengerByDni($dniNumber);
-
-        if ($passengerPosition == -1) {
-            $modifiable = false;
+        if ($posPasajero == -1) {
+            $puedeModificar = false;
         } else {
-            $modifiable = true;
-            $this->passengers[$passengerPosition]["nombre"] = $newName;
+            $puedeModificar = true;
+            $this->pasajeros[$posPasajero]["nombre"] = $nombreNuevo;
         }
-        return $modifiable;
+        return $puedeModificar;
     }
 
-    /**
-     * Modifica el apellido de un pasajero por su número de DNI
-     * Retorna true si es posible, false en caso contrario
-     * @param int $dniNumber
-     * @param string $newLastName
-     * @return boolean
-     */
-    public function modifyLastNameByDni($dniNumber, $newLastName)
+    public function modificarApellidoPorDocumento($nroDocumento, $apellidoNuevo)
     {
-        // int $passengerPosition
-        // boolean $modifiable
+        $posPasajero = $this->buscaPasajero($nroDocumento);
 
-        $passengerPosition = $this->searchPassengerByDni($dniNumber);
-
-        if ($passengerPosition == -1) {
-            $modifiable = false;
+        if ($posPasajero == -1) {
+            $puedeModificar = false;
         } else {
-            $modifiable = true;
-            $this->passengers[$passengerPosition]["apellido"] = $newLastName;
+            $puedeModificar = true;
+            $this->pasajeros[$posPasajero]["apellido"] = $apellidoNuevo;
         }
-        return $modifiable;
+        return $puedeModificar;
     }
-    /**
-     * Busca un pasajero por número de documento, si existe retorna su posición
-     * si no existe retorna -1
-     * @param $dniNumber
-     * @return int
-     */
 
-    private function searchPassengerByDni($dniNumber)
+    private function buscaPasajero($nroDocumento)
     {
-        // boolean $exists
-        // int $passengerPosition
+        $existePasajero = false;
+        $posPasajero = 0;
 
-        $exists = false;
-        $passengerPosition = 0;
-
-        while ($exists == false && $passengerPosition < count($this->passengers)) {
-            if ($dniNumber == $this->passengers[$passengerPosition]["numero de documento"]) {
-                $exists = true;
-                $passengerPosition--;
+        while ($existePasajero == false && $posPasajero < count($this->getPasajeros())) {
+            if ($nroDocumento == $this->getPasajeros()[$posPasajero]["numero de documento"]) {
+                $existePasajero = true;
+                $posPasajero--;
             }
-            $passengerPosition++;
+            $posPasajero++;
         }
-        if ($passengerPosition == count($this->passengers)) {
-            $passengerPosition = -1;
+        if ($posPasajero == count($this->getPasajeros())) {
+            $posPasajero = -1;
         }
-
-        return $passengerPosition;
+        return $posPasajero;
     }
 }
