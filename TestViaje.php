@@ -16,12 +16,12 @@ function menu()
         echo "|| [1] Mostrar toda la información del viaje                                       ||\n";
         echo "|| [2] Crear un viaje nuevo                                                        ||\n";
         echo "|| [3] Agregar un nuevo pasajero al viaje                                          ||\n";
-        echo "|| [4] Quitar un pasajero del viaje                      ||\n";
-        echo "|| [5] Modificar el nombre de un pasajero                ||\n";
-        echo "|| [6] Modificar el apellido de un pasajero             ||\n";
+        echo "|| [4] Quitar un pasajero del viaje                                                ||\n";
+        echo "|| [5] Modificar el nombre de un pasajero                                          ||\n";
+        echo "|| [6] Modificar el apellido de un pasajero                                        ||\n";
         echo "|| [7] Modificar el código del viaje actual                                        ||\n";
         echo "|| [8] Modificar el destino del viaje actual                                       ||\n";
-        echo "|| [9] Modificar la capacidad máxima de pasajeros del viaje actual                ||\n";
+        echo "|| [9] Modificar la capacidad máxima de pasajeros del viaje actual                 ||\n";
         echo "|| [10] Mostrar el código del viaje actual                                         ||\n";
         echo "|| [11] Mostrar el destino del viaje actual                                        ||\n";
         echo "|| [12] Mostrar la cantidad máxima permitida de pasajeros para este viaje          ||\n";
