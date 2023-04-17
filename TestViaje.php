@@ -1,5 +1,7 @@
 <?php
 include("Viaje.php");
+include("Responsable.php");
+include("Pasajero.php");
 
 
 function menu()
@@ -62,11 +64,22 @@ function detenerEjecucion()
 /********************************************************************************/
 /***************************** PROGRAMA PRINCIPAL *******************************/
 /********************************************************************************/
+$persona1 = new Pasajero("Pepe", "Sanchez", 33456789, 115923345);
+$persona2 = new Pasajero("Juan", "Lopez", 35678901, 112474567);
+$persona3 = new Pasajero("Martín", "Garcia", 31234567, 111428798);
+$persona4 = new Pasajero("Diego", "Dominguez", 35678901, 110256734);
+$persona5 = new Pasajero("Marcos", "Gomez", 36789012, 111029384);
 
-$viaje = new Viaje(513, "Madrid", 260);
-$arrayPasajeros[0] = ["numero de documento" => 33456789, "nombre" => "Pepe", "apellido" => "Sanchez"];
-$arrayPasajeros[1] = ["numero de documento" => 34567890, "nombre" => "Juan", "apellido" => "Gomez"];
-$arrayPasajeros[2] = ["numero de documento" => 30123456, "nombre" => "Marcos", "apellido" => "Garcia"];
+
+$responsable = new Responsable(7, 123, "Mario", "Fernandez");
+$viaje = new Viaje(513, "Madrid", 260, $responsable);
+
+
+$arrayPasajeros[0] = $persona1;
+$arrayPasajeros[1] = $persona2;
+$arrayPasajeros[2] = $persona3;
+$arrayPasajeros[3] = $persona4;
+$arrayPasajeros[4] = $persona5;
 $viaje->setPasajeros($arrayPasajeros);
 echo "El programa cuenta con un primer viaje precargado\n";
 echo "\n";
@@ -89,9 +102,11 @@ do {
             $destino = trim(fgets(STDIN));
             echo "Ingrese la capacidad máxima de pasajeros para el nuevo viaje: ";
             $capMaxima = trim(fgets(STDIN));
+            echo "Ingrese el nombre del responsable para el nuevo viaje: ";
+            $responsable = trim(fgets(STDIN));
 
             if (ctype_digit($capMaxima) && $capMaxima >= 0) {
-                $viaje = new Viaje($codigo, $destino, $capMaxima);
+                $viaje = new Viaje($codigo, $destino, $capMaxima, $responsable);
                 echo "Nuevo viaje creado exitosamente\n";
             } else {
                 echo "ERROR: valor inválido para capacidad máxima de pasajeros\n";

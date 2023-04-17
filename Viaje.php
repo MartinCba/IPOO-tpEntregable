@@ -6,17 +6,16 @@ class Viaje
     private $codigo;
     private $destino;
     private $cantMaxPasajeros;
-    private $pasajeros;
-    // Composición del arreglo de pasajeros
-    // pasajeros[x] = ["numero de documento" => $nroDni, "nombre" => $nombre, "apellido" => $apellido];
+    private $pasajeros = [];
+    private $responsable;
 
     // CONSTRUCTOR
-    public function __construct($codigoNuevo, $destinoNuevo, $cantMax)
+    public function __construct($codigoNuevo, $destinoNuevo, $cantMax, $responsableNuevo)
     {
         $this->codigo = $codigoNuevo;
         $this->destino = $destinoNuevo;
         $this->cantMaxPasajeros = $cantMax;
-        $this->pasajeros = [];
+        $this->responsable = $responsableNuevo;
     }
 
     // MODIFICADORES
@@ -31,6 +30,10 @@ class Viaje
     public function setCantMaxPasajeros($cantMaxima)
     {
         $this->cantMaxPasajeros = $cantMaxima;
+    }
+    public function setResponsable($responsableNuevo)
+    {
+        $this->responsable = $responsableNuevo;
     }
     public function setPasajeros($arregloPasajeros)
     {
@@ -50,6 +53,10 @@ class Viaje
     {
         return $this->cantMaxPasajeros;
     }
+    public function getResponsable()
+    {
+        return $this->responsable;
+    }
     public function getPasajeros()
     {
         return $this->pasajeros;
@@ -62,24 +69,25 @@ class Viaje
         $viaje = "Código de viaje: " . $this->getCodigo() . "\n";
         $viaje = $viaje . "Destino de viaje: " . $this->getDestino() . "\n";
         $viaje = $viaje . "Cantidad máxima de pasajeros para este viaje: " . $this->getCantMaxPasajeros() . "\n";
-        $viaje = $viaje . "Información de los pasajeros del viaje: \n";
-        $viaje = $viaje . $this->pasajerosAString();
+        $viaje = $viaje . "Responsable para este viaje: " . "\n" . $this->getResponsable() . "\n";
+        //$viaje = $viaje . "Información de los pasajeros del viaje: \n";
+        //$viaje = $viaje . $this->pasajerosAString();
 
         return $viaje;
     }
 
-    public function pasajerosAString()
-    {
-        $cadenaPasajeros = "";
+    //public function pasajerosAString()
+    //{
+    //    $cadenaPasajeros = "";
 
-        for ($i = 0; $i < count($this->getPasajeros()); $i++) {
-            $documento = $this->getPasajeros()[$i]["numero de documento"];
-            $nombre = $this->getPasajeros()[$i]["nombre"];
-            $apellido = $this->getPasajeros()[$i]["apellido"];
-            $cadenaPasajeros = $cadenaPasajeros . "Pasajero " . $i + 1 . ": [Documento: " . $documento . ", Nombre: " . $nombre . ", Apellido: " . $apellido . "]\n";
-        }
-        return $cadenaPasajeros;
-    }
+    //   for ($i = 0; $i < count($this->getPasajeros()); $i++) {
+    //       $documento = $this->getPasajeros()[$i]["numero de documento"];
+    //       $nombre = $this->getPasajeros()[$i]["nombre"];
+    //       $apellido = $this->getPasajeros()[$i]["apellido"];
+    //       $cadenaPasajeros = $cadenaPasajeros . "Pasajero " . $i + 1 . ": [Documento: " . $documento . ", Nombre: " . $nombre . ", Apellido: " . $apellido . "]\n";
+    //   }
+    //   return $cadenaPasajeros;
+    // }
 
     public function agregarPasajero($nuevoPasajero)
     {
