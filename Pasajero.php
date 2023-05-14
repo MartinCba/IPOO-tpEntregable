@@ -2,64 +2,59 @@
 
 class Pasajero
 {
-    // ATRIBUTOS
     private $nombre;
-    private $apellido;
-    private $numDocumento;
-    private $telefono;
+    private $numeroAsiento;
+    private $numeroTicket;
 
-    // CONSTRUCTOR
-    public function __construct($nombreNuevo, $apellidoNuevo, $numDocumentoNuevo, $telefonoNuevo)
+    public function __construct($nombre, $numeroAsiento, $numeroTicket)
     {
-        $this->nombre = $nombreNuevo;
-        $this->apellido = $apellidoNuevo;
-        $this->numDocumento = $numDocumentoNuevo;
-        $this->telefono = $telefonoNuevo;
+        $this->nombre = $nombre;
+        $this->numeroAsiento = $numeroAsiento;
+        $this->numeroTicket = $numeroTicket;
     }
 
-    // MODIFICADORES
-    public function setNombre($nombreNuevo)
-    {
-        $this->nombre = $nombreNuevo;
-    }
-    public function setApellido($apellidoNuevo)
-    {
-        $this->apellido = $apellidoNuevo;
-    }
-    public function setNumDocumento($numDocumentoNuevo)
-    {
-        $this->numDocumento = $numDocumentoNuevo;
-    }
-    public function setTelefono($telefonoNuevo)
-    {
-        $this->telefono = $telefonoNuevo;
-    }
-
-    // OBSERVADORES
     public function getNombre()
     {
         return $this->nombre;
     }
-    public function getApellido()
+
+    public function setNombre($nombre): self
     {
-        return  $this->apellido;
-    }
-    public function getNumDocumento()
-    {
-        return $this->numDocumento;
-    }
-    public function getTelefono()
-    {
-        return $this->telefono;
+        $this->nombre = $nombre;
+
+        return $this;
     }
 
-    // PROPIAS DE TIPO
+    public function getNumeroAsiento()
+    {
+        return $this->numeroAsiento;
+    }
+
+    public function setNumeroAsiento($numeroAsiento): self
+    {
+        $this->numeroAsiento = $numeroAsiento;
+
+        return $this;
+    }
+
+    public function getNumeroTicket()
+    {
+        return $this->numeroTicket;
+    }
+
+    public function setNumeroTicket($numeroTicket): self
+    {
+        $this->numeroTicket = $numeroTicket;
+
+        return $this;
+    }
+
     public function __toString()
     {
-        $persona = "Nombre: " . $this->nombre . "\n" .
-            "Apellido: " . $this->apellido . "\n" .
-            "Número de documento: " . $this->numDocumento . "\n" .
-            "Teléfono: " . $this->telefono . "\n";
-        return $persona;
+        return "\nNombre: " . $this->getNombre()
+        . "\nNúmero de asiento: " . $this->getNumeroAsiento()
+        . "\nNúmero de ticket: " . $this->getNumeroTicket();
     }
 }
+
+
