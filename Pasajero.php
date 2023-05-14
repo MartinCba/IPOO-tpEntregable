@@ -55,6 +55,12 @@ class Pasajero
         . "\nNúmero de asiento: " . $this->getNumeroAsiento()
         . "\nNúmero de ticket: " . $this->getNumeroTicket();
     }
+
+    public function darPorcentajeIncremento()
+    {
+        $porcentaje = 10;
+        return $porcentaje;
+    }
 }
 
 

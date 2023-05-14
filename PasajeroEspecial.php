@@ -1,36 +1,49 @@
 <?php
 class PasajeroEspecial extends Pasajero
 {
-    private $servicioEspecial;
-    private $alimentacionEspecial;
+    private $requiereSillaDeRuedas;
+    private $requiereAsistencia;
+    private $requiereAlimentacionEspecial;
 
-    public function __construct($nombre, $numeroAsiento, $numeroTicket, $servicioEspecial, $alimentacionEspecial)
+    public function __construct($requiereSillaDeRuedas, $requiereAsistencia, $requiereAlimentacionEspecial)
     {
-        parent::__construct($nombre, $numeroAsiento, $numeroTicket);
-        $this->servicioEspecial = $servicioEspecial;
-        $this->alimentacionEspecial = $alimentacionEspecial;
+        $this->requiereSillaDeRuedas = $requiereSillaDeRuedas;
+        $this->requiereAsistencia = $requiereAsistencia;
+        $this->requiereAlimentacionEspecial = $requiereAlimentacionEspecial;
     }
 
-    public function getServicioEspecial()
+    public function getRequiereSillaDeRuedas()
     {
-        return $this->servicioEspecial;
+        return $this->requiereSillaDeRuedas;
     }
 
-    public function setServicioEspecial($servicioEspecial): self
+    public function setRequiereSillaDeRuedas($requiereSillaDeRuedas): self
     {
-        $this->servicioEspecial = $servicioEspecial;
+        $this->requiereSillaDeRuedas = $requiereSillaDeRuedas;
 
         return $this;
     }
 
-    public function getAlimentacionEspecial()
+    public function getRequiereAsistencia()
     {
-        return $this->alimentacionEspecial;
+        return $this->requiereAsistencia;
     }
 
-    public function setAlimentacionEspecial($alimentacionEspecial): self
+    public function setRequiereAsistencia($requiereAsistencia): self
     {
-        $this->alimentacionEspecial = $alimentacionEspecial;
+        $this->requiereAsistencia = $requiereAsistencia;
+
+        return $this;
+    }
+
+    public function getRequiereAlimentacionEspecial()
+    {
+        return $this->requiereAlimentacionEspecial;
+    }
+
+    public function setRequiereAlimentacionEspecial($requiereAlimentacionEspecial): self
+    {
+        $this->requiereAlimentacionEspecial = $requiereAlimentacionEspecial;
 
         return $this;
     }
@@ -38,10 +51,33 @@ class PasajeroEspecial extends Pasajero
     public function __toString()
     {
         return parent::__toString()
-        . "\nServicio especial: " . $this->getServicioEspecial()
-        . "\nAlimentación especial: " . $this->getAlimentacionEspecial();
+        . "\nRequiere silla de ruedas: " . $this->getRequiereSillaDeRuedas()
+        . "\nRequiere asistencia especial: " . $this->getRequiereAsistencia()
+        . "\nRequiere alimentación especial: " . $this->getRequiereAsistencia();
+    }
+
+    public function darPorcentajeIncremento()
+    {
+        $cantidadServicios = 0;
+        $porcentaje = parent::darPorcentajeIncremento();
+        if ($this->getRequiereSillaDeRuedas()) {
+            $cantidadServicios++;
+        }
+        if ($this->getRequiereAsistencia()) {
+            $cantidadServicios++;
+        }
+        if ($this->getRequiereAlimentacionEspecial()) {
+            $cantidadServicios++;
+        }
+        if ($cantidadServicios == 1) {
+            $porcentaje += 5;
+        } elseif ($cantidadServicios >= 2) {
+            $porcentaje += 20;
+        }
+        return $porcentaje;
     }
 }
 ?>
 
-<!-- La clase Pasajeros con necesidades especiales se refiere a pasajeros que pueden requerir servicios especiales como sillas de ruedas, asistencia para el embarque o desembarque, o comidas especiales para personas con alergias o restricciones alimentarias -->
+
+
