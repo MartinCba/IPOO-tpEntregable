@@ -76,7 +76,7 @@ class Viaje
     public function mostrarPasajeros()
     {
         $pasajeros = $this->getPasajeros();
-        $texto = "\nNo se han cargado pasajeros ";
+        $texto = "\n";
         $cantidad = count($pasajeros);
         for ($i = 0; $i < $cantidad; $i++) {
             $texto = $texto . "\n" . $pasajeros[$i];
@@ -131,17 +131,16 @@ class Viaje
         return $exito;
     }
 
-    public function asientoLibre()
+    public function asientoLibre($colPasajeros)
     {
-        $pasajeros = $this->getPasajeros();
         $asientos = $this->getCantMaxPasajeros();
         $asientoLibre = 1;
         $encontrado = false;
         $i = 0;
 
         while (!$encontrado && $i < $asientos) {
-            $pasajero = $pasajeros[$i];
-            if ($asientoLibre == $pasajero->getnumeroAsiento()) {
+            $pasajero = $colPasajeros[$i];
+            if ($asientoLibre == $pasajero->getNumeroAsiento()) {
                 $asientoLibre++;
             } else {
                 $encontrado = true;
@@ -154,9 +153,9 @@ class Viaje
         return $asientoLibre;
     }
 
-    public function asignarTicket()
+    public function asignarTicket($colPasajeros)
     {
-        $nuevoTicket = $this->asientoLibre() + 100;
+        $nuevoTicket = $this->asientoLibre($colPasajeros) + 100;
         return $nuevoTicket;
     }
 

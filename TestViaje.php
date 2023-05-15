@@ -122,8 +122,9 @@ do {
             // Agrega un nuevo pasajero al viaje actual
             echo "Ingrese el nombre del pasajero: ";
             $nombre = trim(fgets(STDIN));
-            $asiento = $viaje->asientoLibre();
-            $ticket = $viaje->asignarTicket();
+            $colPasajeros = $viaje->getPasajeros();
+            $asiento = $viaje->asientoLibre($colPasajeros);
+            $ticket = $viaje->asignarTicket($colPasajeros);
 
             $pasajero = new Pasajero($nombre, $asiento, $ticket);
             $puedeAgregar = $viaje->agregarPasajero($pasajero);
