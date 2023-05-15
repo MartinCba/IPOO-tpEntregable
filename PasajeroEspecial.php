@@ -1,4 +1,7 @@
 <?php
+
+use Pasajero;
+
 class PasajeroEspecial extends Pasajero
 {
     private $requiereSillaDeRuedas;

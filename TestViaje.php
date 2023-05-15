@@ -1,12 +1,10 @@
 <?php
-include("Viaje.php");
-
-
+include "Viaje.php";
 
 function menu()
 {
     do {
-        echo "-------------------------------------------------------------------------------------\n";
+        echo "||---------------------------------------------------------------------------------||\n";
         echo "||                              [Viaje Feliz]                                      ||\n";
         echo "||                                                                                 ||\n";
         echo "||                               Menú general                                      ||\n";
@@ -19,24 +17,23 @@ function menu()
         echo "|| [3] Agregar un nuevo pasajero al viaje                                          ||\n";
         echo "|| [4] Quitar un pasajero del viaje                                                ||\n";
         echo "|| [5] Modificar el nombre de un pasajero                                          ||\n";
-        echo "|| [6] Modificar el apellido de un pasajero                                        ||\n";
-        echo "|| [7] Modificar el código del viaje actual                                        ||\n";
-        echo "|| [8] Modificar el destino del viaje actual                                       ||\n";
-        echo "|| [9] Modificar el responsable del viaje actual                                  ||\n";
-        echo "|| [10] Modificar la capacidad máxima de pasajeros del viaje actual                 ||\n";
-        echo "|| [11] Mostrar el código del viaje actual                                         ||\n";
-        echo "|| [12] Mostrar el destino del viaje actual                                        ||\n";
-        echo "|| [13] Mostrar la cantidad máxima permitida de pasajeros para este viaje          ||\n";
-        echo "|| [14] Mostrar todos los pasajeros que se encuentran en el viaje actual           ||\n";
-        echo "|| [15] Mostrar quien es el responsable del viaje actual                           ||\n";
+        echo "|| [6] Modificar el código del viaje actual                                        ||\n";
+        echo "|| [7] Modificar el destino del viaje actual                                       ||\n";
+        echo "|| [8] Modificar el responsable del viaje actual                                   ||\n";
+        echo "|| [9] Modificar la capacidad máxima de pasajeros del viaje actual                 ||\n";
+        echo "|| [10] Mostrar el código del viaje actual                                         ||\n";
+        echo "|| [11] Mostrar el destino del viaje actual                                        ||\n";
+        echo "|| [12] Mostrar la cantidad máxima permitida de pasajeros para este viaje          ||\n";
+        echo "|| [13] Mostrar todos los pasajeros que se encuentran en el viaje actual           ||\n";
+        echo "|| [14] Mostrar quien es el responsable del viaje actual                           ||\n";
         echo "|| [0] Para finaizar el programa                                                   ||\n";
         echo "||                                                                                 ||\n";
-        echo "-------------------------------------------------------------------------------------\n";
+        echo "||---------------------------------------------------------------------------------||\n";
         echo "\n";
         echo "Indique la operación que desea realizar: ";
         $opcion = trim(fgets(STDIN));
 
-        if ($opcion < 0 || $opcion > 15 || !ctype_digit($opcion)) {
+        if ($opcion < 0 || $opcion > 14 || !ctype_digit($opcion)) {
             echo "\n";
             echo "-------------------------------------------------------------------------------------\n";
             echo "|| ¡ERROR! Usted ha ingresado un valor NO válido,                                  ||\n";
@@ -44,7 +41,7 @@ function menu()
             echo "-------------------------------------------------------------------------------------\n";
             detenerEjecucion();
         }
-    } while ($opcion < 0 || $opcion > 15);
+    } while ($opcion < 0 || $opcion > 14);
 
     echo "\n";
 
@@ -65,22 +62,20 @@ function detenerEjecucion()
 /********************************************************************************/
 /***************************** PROGRAMA PRINCIPAL *******************************/
 /********************************************************************************/
-$persona1 = new Pasajero("Pepe", "Sanchez", 33456789, 115923345);
-$persona2 = new Pasajero("Juan", "Lopez", 35678901, 112474567);
-$persona3 = new Pasajero("Martín", "Garcia", 31234567, 111428798);
-$persona4 = new Pasajero("Diego", "Dominguez", 35678901, 110256734);
-$persona5 = new Pasajero("Marcos", "Gomez", 36789012, 111029384);
-
+$pasajero1 = new Pasajero("Juan Lopez", 1, 101);
+$pasajero2 = new Pasajero("Julian Gomez", 2, 102);
+$pasajero3 = new Pasajero("Teresa Carrion", 3, 103);
+$pasajero4 = new Pasajero("Julieta Lascano", 4, 104);
+$pasajero5 = new Pasajero("Raul Unzaga", 5, 105);
 
 $responsable = new Responsable(7, 123, "Mario", "Fernandez");
 $viaje = new Viaje(513, "Madrid", 260, $responsable);
 
-
-$arrayPasajeros[0] = $persona1;
-$arrayPasajeros[1] = $persona2;
-$arrayPasajeros[2] = $persona3;
-$arrayPasajeros[3] = $persona4;
-$arrayPasajeros[4] = $persona5;
+$arrayPasajeros[0] = $pasajero1;
+$arrayPasajeros[1] = $pasajero2;
+$arrayPasajeros[2] = $pasajero3;
+$arrayPasajeros[3] = $pasajero4;
+$arrayPasajeros[4] = $pasajero5;
 $viaje->setPasajeros($arrayPasajeros);
 echo "El programa cuenta con un primer viaje precargado\n";
 echo "\n";
@@ -125,73 +120,54 @@ do {
             break;
         case 3:
             // Agrega un nuevo pasajero al viaje actual
-            echo "Ingrese el número de documento del pasajero: ";
-            $documento = trim(fgets(STDIN));
             echo "Ingrese el nombre del pasajero: ";
             $nombre = trim(fgets(STDIN));
-            echo "Ingrese el apellido del pasajero: ";
-            $apellido = trim(fgets(STDIN));
-            echo "Ingrese el telefono del pasajero: ";
-            $telefono = trim(fgets(STDIN));
+            $asiento = $viaje->asientoLibre();
+            $ticket = $viaje->asignarTicket();
 
-            $pasajero = new Pasajero($nombre, $apellido, $documento, $telefono);
+            $pasajero = new Pasajero($nombre, $asiento, $ticket);
             $puedeAgregar = $viaje->agregarPasajero($pasajero);
 
             if ($puedeAgregar) {
-                echo "El pasajero se agrego con exito\n";
+                echo "El pasajero se agregó con exito\n";
             } else {
                 if (count($viaje->getPasajeros()) == $viaje->getCantMaxPasajeros()) {
                     echo "ERROR: el viaje se encuentra en su capacidad máxima de pasajeros\n";
                 } else {
-                    echo "ERROR: el documento del pasajero ya se encuentra registrado dentro del viaje\n";
+                    echo "ERROR: El pasajero ya se encuentra registrado dentro del viaje\n";
                 }
             }
             detenerEjecucion();
             break;
         case 4:
-            // Quita un pasajero del viaje por número de documento
-            echo "Ingrese el número de documento del pasajero que desea quitar del viaje: ";
-            $documento = trim(fgets(STDIN));
-            $esPosible = $viaje->quitarPasajeroPorDocumento($documento);
+            // Quita un pasajero del viaje por número de asiento
+            echo "Ingrese el número de asiento del pasajero que desea quitar del viaje: ";
+            $asiento = trim(fgets(STDIN));
+            $esPosible = $viaje->quitarPasajeroPorAsiento($asiento);
 
             if ($esPosible) {
                 echo "Pasajero quitado del viaje exitosamente\n";
             } else {
-                echo "No se pudo quitar el pasajero del viaje (no se encontro el documento cargado en el viaje actual)\n";
+                echo "No se pudo quitar el pasajero del viaje (no se encontro el asiento cargado en el viaje actual)\n";
             }
             detenerEjecucion();
             break;
         case 5:
-            // Modifica el nombre de un pasajero por número de documento
-            echo "Ingrese el número de documento del pasajero al que desea cambiar su nombre: ";
-            $documento = trim(fgets(STDIN));
+            // Modifica el nombre de un pasajero por número de asiento
+            echo "Ingrese el número de asiento del pasajero al que desea cambiar su nombre: ";
+            $asiento = trim(fgets(STDIN));
             echo "Ingrese el nuevo nombre que desea asignar al pasajero: ";
             $nombre = trim(fgets(STDIN));
-            $esPosible = $viaje->modificarNombrePorDocumento($documento, $nombre);
+            $esPosible = $viaje->modificarNombrePorAsiento($asiento, $nombre);
 
             if ($esPosible) {
                 echo "Se modifico el nombre del pasajero exitosamente\n";
             } else {
-                echo "No se pudo modificar el nombre del pasajero (no se encontro el documento cargado en el viaje actual)\n";
+                echo "No se pudo modificar el nombre del pasajero (no se encontro el asiento cargado en el viaje actual)\n";
             }
             detenerEjecucion();
             break;
         case 6:
-            // Modifica el apellido de un pasajero por número de documento
-            echo "Ingrese el número de documento del pasajero al que desea cambiar su apellido: ";
-            $documento = trim(fgets(STDIN));
-            echo "Ingrese el nuevo apellido que desea asignar al pasajero: ";
-            $apellido = trim(fgets(STDIN));
-            $esPosible = $viaje->modificarApellidoPorDocumento($documento, $apellido);
-
-            if ($esPosible) {
-                echo "Se modifico el apellido del pasajero exitosamente\n";
-            } else {
-                echo "No se pudo modificar el apellido del pasajero (no se encontro el documento cargado en el viaje actual)\n";
-            }
-            detenerEjecucion();
-            break;
-        case 7:
             // Modifica el código del viaje actual
             echo "Ingrese un nuevo código para el viaje actual: ";
             $codigo = trim(fgets(STDIN));
@@ -199,7 +175,7 @@ do {
             echo "Código de viaje modificado exitosamente";
             detenerEjecucion();
             break;
-        case 8:
+        case 7:
             // Modifica el destino del viaje
             echo "Ingrese el nuevo destino del viaje: ";
             $destino = trim(fgets(STDIN));
@@ -207,7 +183,7 @@ do {
             echo "Destino modificado exitosamente\n";
             detenerEjecucion();
             break;
-        case 9:
+        case 8:
             // Modifica al responsable actual del viaje
             echo "Ingrese el nombre del nuevo responsable: ";
             $nombre = trim(fgets(STDIN));
@@ -222,7 +198,7 @@ do {
             $viaje->setResponsable($responsable);
 
             break;
-        case 10:
+        case 9:
             // Modifica la cantidad máxima permitida de pasajeros en el viaje
             echo "Ingrese la nueva cantidad máxima permitida de pasajeros para este viaje: ";
             $capMaxima = trim(fgets(STDIN));
@@ -234,29 +210,29 @@ do {
             }
             detenerEjecucion();
             break;
-        case 11:
+        case 10:
             // Muestra el código del viaje actual
             echo "El código del viaje actual es: " . $viaje->getCodigo() . "\n";
             detenerEjecucion();
             break;
-        case 12:
+        case 11:
             // Muestra el destino del viaje actual
             echo "El destino del viaje actual es: " . $viaje->getDestino() . "\n";
             detenerEjecucion();
             break;
-        case 13:
+        case 12:
             // Muestra la cantidad máxima de pasajeros permitida para el viaje actual
             echo "La cantidad máxima de pasajeros permitida para el viaje actual es: " . $viaje->getCantMaxPasajeros() . "\n";
             detenerEjecucion();
             break;
-        case 14:
+        case 13:
             // Muestra el arreglo de pasajeros del viaje actual
             echo "El arreglo de pasajeros del viaje actual es:\n";
             $viaje->mostrarPasajeros();
             echo "\n";
             detenerEjecucion();
             break;
-        case 15:
+        case 14:
             // Muestra quien es el responsable de este viaje
             echo "El responsable del viaje actual es: \n";
             $viaje->getResponsable() . "\n";

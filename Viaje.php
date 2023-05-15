@@ -1,18 +1,16 @@
 <?php
 
-include_once("Pasajero.php");
-include_once("Responsable.php");
+include_once "Pasajero.php";
+include_once "Responsable.php";
 
 class Viaje
 {
-    // ATRIBUTOS
     private $codigo;
     private $destino;
     private $cantMaxPasajeros;
     private $responsable;
     private $pasajeros;
 
-    // CONSTRUCTOR
     public function __construct($codigoNuevo, $destinoNuevo, $cantMax, $responsableNuevo)
     {
         $this->codigo = $codigoNuevo;
@@ -22,7 +20,6 @@ class Viaje
         $this->pasajeros = [];
     }
 
-    // MODIFICADORES
     public function setCodigo($codigoNuevo)
     {
         $this->codigo = $codigoNuevo;
@@ -44,7 +41,6 @@ class Viaje
         $this->pasajeros = $pasajerosNuevos;
     }
 
-    // OBSERVADORES
     public function getCodigo()
     {
         return $this->codigo;
@@ -66,119 +62,106 @@ class Viaje
         return $this->pasajeros;
     }
 
-    // PROPIAS DE TIPO
-
     public function __toString()
     {
-        $viaje = "Código de viaje: " . $this->getCodigo() . "\n"
-            . "Destino de viaje: " . $this->getDestino() . "\n"
-            . "Cantidad máxima de pasajeros para este viaje: " . $this->getCantMaxPasajeros() . "\n"
-            . "Responsable para este viaje: " . "\n" . $this->getResponsable() . "\n"
-            . "Información de los pasajeros del viaje: \n"
-            . $this->mostrarPasajeros();
+        return "\nCódigo de viaje: " . $this->getCodigo()
+        . "\nDestino de viaje: " . $this->getDestino()
+        . "\nCantidad máxima de pasajeros para este viaje: " . $this->getCantMaxPasajeros()
+        . "\nResponsable para este viaje: " . "\n" . $this->getResponsable()
+        . "\nInformación de los pasajeros del viaje: "
+        . $this->mostrarPasajeros();
 
-        return $viaje;
     }
 
     public function mostrarPasajeros()
     {
         $pasajeros = $this->getPasajeros();
-        $texto = "No se han cargado pasajeros .\n";
+        $texto = "\nNo se han cargado pasajeros ";
         $cantidad = count($pasajeros);
         for ($i = 0; $i < $cantidad; $i++) {
-            $texto = $texto . $pasajeros[$i];
+            $texto = $texto . "\n" . $pasajeros[$i];
         }
         return $texto;
     }
 
     public function agregarPasajero($nuevoPasajero)
     {
-        $pasajeroNuevo = [];
-        if (count($this->getPasajeros()) == $this->getCantMaxPasajeros()) {
+        $listaPasajeros = $this->getPasajeros();
+        if (count($this->getPasajeros()) >= $this->getCantMaxPasajeros()) {
             $agregado = false;
         } else {
-            if ($this->buscaPasajero($nuevoPasajero->getDocumento()) != -1) {
-                $agregado = false;
-            } else {
-                $agregado = true;
-                $pasajeroNuevo = $this->getPasajeros();
-                array_push($pasajeroNuevo, $nuevoPasajero);
-                $this->setPasajeros($pasajeroNuevo);
-            }
+            array_push($listaPasajeros, $nuevoPasajero);
+            $this->setPasajeros($listaPasajeros);
+            $agregado = true;
         }
         return $agregado;
     }
 
-    public function quitarPasajeroPorDocumento($documentoAQuitar)
+    public function quitarPasajeroPorAsiento($asientoAQuitar)
     {
-        $posicionPasajero = $this->buscaPasajero($documentoAQuitar);
-
-        if ($posicionPasajero == -1) {
-            $puedeQuitar = false;
-        } else {
-            $puedeQuitar = true;
-            $pasajeros = $this->getPasajeros();
-            unset($pasajeros[$posicionPasajero]);
-            $this->setPasajeros($pasajeros);
-        }
-        return $puedeQuitar;
-    }
-
-    public function modificarNombrePorDocumento($nroDocumento, $nombreNuevo)
-    {
-        $posicionPasajero = $this->buscaPasajero($nroDocumento);
-
-        if ($posicionPasajero == -1) {
-            $puedeModificar = false;
-        } else {
-            $puedeModificar = true;
-            $pasajeros = $this->getPasajeros();
-            $pasajeros[$posicionPasajero]->setNombre();
-            $this->setPasajeros($pasajeros);
-        }
-        return $puedeModificar;
-    }
-
-    public function modificarApellidoPorDocumento($nroDocumento, $apellidoNuevo)
-    {
-        $posicionPasajero = $this->buscaPasajero($nroDocumento);
-
-        if ($posicionPasajero == -1) {
-            $puedeModificar = false;
-        } else {
-            $puedeModificar = true;
-            $pasajeros = $this->getPasajeros();
-            $pasajeros[$posicionPasajero]->setApellido();
-            $this->setPasajeros($pasajeros);
-        }
-        return $puedeModificar;
-    }
-
-    private function buscaPasajero($nroDocumento)
-    {
-        $existePasajero = false;
-        $posicionPasajero = 0;
-
-        while ($existePasajero == false && $posicionPasajero < count($this->getPasajeros())) {
-            $documentoPasajero = ($this->getPasajeros()[$posicionPasajero])->getDocumento();
-
-            if ($nroDocumento == $documentoPasajero){
-                $existePasajero = true;
-                $posicionPasajero--;
+        $exito = false;
+        $pasajeros = $this->getPasajeros();
+        $cantidad = count($pasajeros);
+        for ($i = 0; $i < $cantidad; $i++) {
+            $pasajero = $pasajeros[$i];
+            $asiento = $pasajero->getNumeroAsiento();
+            if ($asiento == $asientoAQuitar) {
+                $exito = true;
+                unset($pasajeros[$i]);
+                $this->setPasajeros($pasajeros);
             }
-            $posicionPasajero++;
         }
-        if ($posicionPasajero == count($this->getPasajeros())) {
-            $posicionPasajero = -1;
-        }
-        return $posicionPasajero;
+        return $exito;
     }
 
-    public function existePasajero($documento){
-        $existe = false;
-        if($this->buscaPasajero($documento) != -1){
-            $existe = true;
+    public function modificarNombrePorAsiento($nroAsiento, $nombreNuevo)
+    {
+        $exito = false;
+        $pasajeros = $this->getPasajeros();
+        $cantidad = count($pasajeros);
+        for ($i = 0; $i < $cantidad; $i++) {
+            $pasajero = $pasajeros[$i];
+            $asiento = $pasajero->getNumeroAsiento();
+            if ($asiento == $nroAsiento) {
+                $exito = true;
+                $pasajeros[$i]->setNombre($nombreNuevo);
+                $this->setPasajeros($pasajeros);
+            }
         }
-        return $existe;
+        return $exito;
     }
+
+    public function asientoLibre()
+    {
+        $pasajeros = $this->getPasajeros();
+        $asientos = $this->getCantMaxPasajeros();
+        $asientoLibre = 1;
+        $encontrado = false;
+        $i = 0;
+
+        while (!$encontrado && $i < $asientos) {
+            $pasajero = $pasajeros[$i];
+            if ($asientoLibre == $pasajero->getnumeroAsiento()) {
+                $asientoLibre++;
+            } else {
+                $encontrado = true;
+            }
+            $i++;
+        }
+        if ($asientoLibre > $asientos) {
+            $asientoLibre = -1;
+        }
+        return $asientoLibre;
+    }
+
+    public function asignarTicket()
+    {
+        $nuevoTicket = $this->asientoLibre() + 100;
+        return $nuevoTicket;
+    }
+
 }
+/*
+Modificar la clase viaje para almacenar el costo del viaje, la suma de los costos abonados por los pasajeros e implementar el método venderPasaje($objPasajero) que debe incorporar el pasajero a la colección de pasajeros ( solo si hay espacio disponible), actualizar los costos abonados y retornar el costo final que deberá ser abonado por el pasajero.
+
+Implemente la función hayPasajesDisponible() que retorna verdadero si la cantidad de pasajeros del viaje es menor a la cantidad máxima de pasajeros y falso caso contrario */
