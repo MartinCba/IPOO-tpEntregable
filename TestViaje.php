@@ -1,4 +1,5 @@
 <?php
+
 include "Viaje.php";
 
 function menu()
@@ -14,7 +15,7 @@ function menu()
         echo "||                                                                                 ||\n";
         echo "|| [1] Mostrar toda la información del viaje                                       ||\n";
         echo "|| [2] Crear un viaje nuevo                                                        ||\n";
-        echo "|| [3] Agregar un nuevo pasajero al viaje                                          ||\n";
+        echo "|| [3] Vender un Ticket                                                            ||\n";
         echo "|| [4] Quitar un pasajero del viaje                                                ||\n";
         echo "|| [5] Modificar el nombre de un pasajero                                          ||\n";
         echo "|| [6] Modificar el código del viaje actual                                        ||\n";
@@ -63,13 +64,19 @@ function detenerEjecucion()
 /***************************** PROGRAMA PRINCIPAL *******************************/
 /********************************************************************************/
 $pasajero1 = new Pasajero("Juan Lopez", 1, 101);
-$pasajero2 = new Pasajero("Julian Gomez", 2, 102);
+$pasajero2 = new PasajeroVip("Julian Gomez", 2, 102, 99, 2500);
 $pasajero3 = new Pasajero("Teresa Carrion", 3, 103);
-$pasajero4 = new Pasajero("Julieta Lascano", 4, 104);
-$pasajero5 = new Pasajero("Raul Unzaga", 5, 105);
+$pasajero4 = new PasajeroVip("Julieta Lascano", 4, 104, 77, 5000);
+$pasajero5 = new PasajeroEspecial("Raul Unzaga", 5, 105, true, true, false);
 
 $responsable = new Responsable(7, 123, "Mario", "Fernandez");
-$viaje = new Viaje(513, "Madrid", 260, $responsable);
+$viaje = new Viaje(513, "Cordoba", 60, $responsable, 100);
+
+$vendido = $viaje->venderPasaje($pasajero1);
+$vendido = $viaje->venderPasaje($pasajero2);
+$vendido = $viaje->venderPasaje($pasajero3);
+$vendido = $viaje->venderPasaje($pasajero4);
+$vendido = $viaje->venderPasaje($pasajero5);
 
 $arrayPasajeros[0] = $pasajero1;
 $arrayPasajeros[1] = $pasajero2;
@@ -98,6 +105,8 @@ do {
             $destino = trim(fgets(STDIN));
             echo "Ingrese la capacidad máxima de pasajeros para el nuevo viaje: ";
             $capMaxima = trim(fgets(STDIN));
+            echo "Ingrese el costo para el nuevo viaje: ";
+            $costo = trim(fgets(STDIN));
             echo "Ingrese los datos del responsable:\n";
             echo "Nombre responsable: ";
             $nombre = trim(fgets(STDIN));
@@ -111,7 +120,7 @@ do {
             $responsable = new Responsable($numeroEmpleado, $numeroLicencia, $nombre, $apellido);
 
             if (ctype_digit($capMaxima) && $capMaxima >= 0) {
-                $viaje = new Viaje($codigo, $destino, $capMaxima, $responsable);
+                $viaje = new Viaje($codigo, $destino, $capMaxima, $responsable, $costo);
                 echo "Nuevo viaje creado exitosamente\n";
             } else {
                 echo "ERROR: valor inválido para capacidad máxima de pasajeros\n";
@@ -122,15 +131,17 @@ do {
             // Agrega un nuevo pasajero al viaje actual
             echo "Ingrese el nombre del pasajero: ";
             $nombre = trim(fgets(STDIN));
-            $colPasajeros = $viaje->getPasajeros();
-            $asiento = $viaje->asientoLibre($colPasajeros);
-            $ticket = $viaje->asignarTicket($colPasajeros);
+            echo "Ingrese el número de asiento: ";
+            $asiento = trim(fgets(STDIN));
+            echo "Ingrese el número de ticket: ";
+            $ticket = trim(fgets(STDIN));
 
             $pasajero = new Pasajero($nombre, $asiento, $ticket);
-            $puedeAgregar = $viaje->agregarPasajero($pasajero);
+            $vendido = $viaje->venderPasaje($pasajero);
 
-            if ($puedeAgregar) {
+            if ($vendido != 0) {
                 echo "El pasajero se agregó con exito\n";
+                echo "El pasaje costo: \n" . $vendido;
             } else {
                 if (count($viaje->getPasajeros()) == $viaje->getCantMaxPasajeros()) {
                     echo "ERROR: el viaje se encuentra en su capacidad máxima de pasajeros\n";
@@ -229,14 +240,14 @@ do {
         case 13:
             // Muestra el arreglo de pasajeros del viaje actual
             echo "El arreglo de pasajeros del viaje actual es:\n";
-            $viaje->mostrarPasajeros();
+            echo $viaje->mostrarPasajeros();
             echo "\n";
             detenerEjecucion();
             break;
         case 14:
             // Muestra quien es el responsable de este viaje
             echo "El responsable del viaje actual es: \n";
-            $viaje->getResponsable() . "\n";
+            echo $viaje->getResponsable() . "\n";
             echo "\n";
         case 0:
             // Finaliza el programa

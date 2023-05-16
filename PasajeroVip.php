@@ -1,6 +1,6 @@
 <?php
 
-use Pasajero;
+
 
 class PasajeroVip extends Pasajero
 {

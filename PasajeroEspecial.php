@@ -1,6 +1,5 @@
 <?php
 
-use Pasajero;
 
 class PasajeroEspecial extends Pasajero
 {
@@ -8,8 +7,9 @@ class PasajeroEspecial extends Pasajero
     private $requiereAsistencia;
     private $requiereAlimentacionEspecial;
 
-    public function __construct($requiereSillaDeRuedas, $requiereAsistencia, $requiereAlimentacionEspecial)
+    public function __construct($nombre, $numeroAsiento, $numeroTicket, $requiereSillaDeRuedas, $requiereAsistencia, $requiereAlimentacionEspecial)
     {
+        parent::__construct($nombre, $numeroAsiento, $numeroTicket);
         $this->requiereSillaDeRuedas = $requiereSillaDeRuedas;
         $this->requiereAsistencia = $requiereAsistencia;
         $this->requiereAlimentacionEspecial = $requiereAlimentacionEspecial;
@@ -80,7 +80,3 @@ class PasajeroEspecial extends Pasajero
         return $porcentaje;
     }
 }
-?>
-
-
-

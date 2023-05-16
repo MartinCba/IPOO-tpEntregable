@@ -1,6 +1,8 @@
 <?php
 
 include_once "Pasajero.php";
+include_once "PasajeroVip.php";
+include_once "PasajeroEspecial.php";
 include_once "Responsable.php";
 
 class Viaje
@@ -10,14 +12,18 @@ class Viaje
     private $cantMaxPasajeros;
     private $responsable;
     private $pasajeros;
+    private $costoViaje;
+    private $sumaTotalCostoPasajero;
 
-    public function __construct($codigoNuevo, $destinoNuevo, $cantMax, $responsableNuevo)
+    public function __construct($codigoNuevo, $destinoNuevo, $cantMax, $responsableNuevo, $costoViaje)
     {
         $this->codigo = $codigoNuevo;
         $this->destino = $destinoNuevo;
         $this->cantMaxPasajeros = $cantMax;
         $this->responsable = $responsableNuevo;
         $this->pasajeros = [];
+        $this->costoViaje = $costoViaje;
+        $this->sumaTotalCostoPasajero = 0;
     }
 
     public function setCodigo($codigoNuevo)
@@ -61,12 +67,37 @@ class Viaje
     {
         return $this->pasajeros;
     }
+    public function getCostoViaje()
+    {
+        return $this->costoViaje;
+    }
+
+    public function setCostoViaje($costoViaje): self
+    {
+        $this->costoViaje = $costoViaje;
+
+        return $this;
+    }
+
+    public function getSumaTotalCostoPasajero()
+    {
+        return $this->sumaTotalCostoPasajero;
+    }
+
+    public function setSumaTotalCostoPasajero($sumaTotalCostoPasajero): self
+    {
+        $this->sumaTotalCostoPasajero = $sumaTotalCostoPasajero;
+
+        return $this;
+    }
 
     public function __toString()
     {
         return "\nCódigo de viaje: " . $this->getCodigo()
         . "\nDestino de viaje: " . $this->getDestino()
         . "\nCantidad máxima de pasajeros para este viaje: " . $this->getCantMaxPasajeros()
+        . "\nCosto del viaje por pasajero: $" . $this->getCostoViaje()
+        . "\nCosto total de todos los pasajeros: $" . $this->getSumaTotalCostoPasajero()
         . "\nResponsable para este viaje: " . "\n" . $this->getResponsable()
         . "\nInformación de los pasajeros del viaje: "
         . $this->mostrarPasajeros();
@@ -131,36 +162,30 @@ class Viaje
         return $exito;
     }
 
-    public function asientoLibre($colPasajeros)
+    public function venderPasaje($objPasajero)
     {
-        $asientos = $this->getCantMaxPasajeros();
-        $asientoLibre = 1;
-        $encontrado = false;
-        $i = 0;
-
-        while (!$encontrado && $i < $asientos) {
-            $pasajero = $colPasajeros[$i];
-            if ($asientoLibre == $pasajero->getNumeroAsiento()) {
-                $asientoLibre++;
-            } else {
-                $encontrado = true;
-            }
-            $i++;
+        $precio = 0;
+        if ($this->hayPasajesDisponibles()) {
+            $porcentajeIncremento = $objPasajero->darPorcentajeIncremento();
+            $costo = $this->getCostoViaje();
+            $porcentajeDecimal = $porcentajeIncremento / 100;
+            $porcentajeValor = $porcentajeDecimal * $costo;
+            $precio = $porcentajeValor + $costo;
+            $sumaCostos = $this->getSumaTotalCostoPasajero();
+            $sumaCostos = $sumaCostos + $precio;
+            $this->setSumaTotalCostoPasajero($sumaCostos);
+            $this->agregarPasajero($objPasajero);
         }
-        if ($asientoLibre > $asientos) {
-            $asientoLibre = -1;
-        }
-        return $asientoLibre;
+        return $precio;
     }
 
-    public function asignarTicket($colPasajeros)
+    public function hayPasajesDisponibles()
     {
-        $nuevoTicket = $this->asientoLibre($colPasajeros) + 100;
-        return $nuevoTicket;
+        $hayPasajes = false;
+        $cantidadPasajeros = count($this->getPasajeros());
+        if ($cantidadPasajeros < $this->getCantMaxPasajeros()) {
+            $hayPasajes = true;
+        }
+        return $hayPasajes;
     }
-
 }
-/*
-Modificar la clase viaje para almacenar el costo del viaje, la suma de los costos abonados por los pasajeros e implementar el método venderPasaje($objPasajero) que debe incorporar el pasajero a la colección de pasajeros ( solo si hay espacio disponible), actualizar los costos abonados y retornar el costo final que deberá ser abonado por el pasajero.
-
-Implemente la función hayPasajesDisponible() que retorna verdadero si la cantidad de pasajeros del viaje es menor a la cantidad máxima de pasajeros y falso caso contrario */
