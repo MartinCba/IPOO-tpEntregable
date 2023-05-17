@@ -55,10 +55,10 @@ class Responsable
     // PROPIAS DE TIPO
     public function __toString()
     {
-        $responsable = "-Número de empleado: " . $this->numEmpleado . "\n" .
-            "-Número de licencia: " . $this->numLicencia . "\n" .
-            "-Nombre: " . $this->nombre . "\n" .
-            "-apellido: " . $this->apellido . "\n";
+        $responsable = "\nNúmero de empleado: " . $this->numEmpleado .
+        "\nNúmero de licencia: " . $this->numLicencia .
+        "\nNombre: " . $this->nombre .
+        "\nApellido: " . $this->apellido;
         return $responsable;
     }
 }
