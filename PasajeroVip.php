@@ -58,4 +58,3 @@ class PasajeroVip extends Pasajero
 }
 ?>
 
-<!--/*  Para un pasajero VIP se incrementa el importe un 35% y si la cantidad de millas acumuladas supera a las 300 millas se realiza un incremento del 30%.  */

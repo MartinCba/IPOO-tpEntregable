@@ -107,7 +107,7 @@ class Viaje
     public function mostrarPasajeros()
     {
         $pasajeros = $this->getPasajeros();
-        $texto = "\n";
+        $texto = "";
         $cantidad = count($pasajeros);
         for ($i = 0; $i < $cantidad; $i++) {
             $texto = $texto . "\n" . $pasajeros[$i];

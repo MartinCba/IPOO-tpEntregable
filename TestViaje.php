@@ -60,6 +60,50 @@ function detenerEjecucion()
     echo "\n";
 }
 
+function menuVenderViaje()
+{
+    do {
+        echo "||---------------------------------------------------------------------------------||\n";
+        echo "||                              [Viaje Feliz]                                      ||\n";
+        echo "||                                                                                 ||\n";
+        echo "||                           Menú venta de Tickets                                 ||\n";
+        echo "||                                                                                 ||\n";
+        echo "|| Ingrese por teclado el número que corresponda a la operación que desea          ||\n";
+        echo "|| realizar:                                                                       ||\n";
+        echo "||                                                                                 ||\n";
+        echo "|| [1] Ticket de pasajero estandar                                                 ||\n";
+        echo "|| [2] Ticket de pasajero V.I.P                                                    ||\n";
+        echo "|| [3] Ticket de pasajero con servicios especiales                                 ||\n";
+        echo "||                                                                                 ||\n";
+        echo "||---------------------------------------------------------------------------------||\n";
+        echo "\n";
+        echo "Indique la operación que desea realizar: ";
+        $opcion = trim(fgets(STDIN));
+
+        if ($opcion < 1 || $opcion > 3 || !ctype_digit($opcion)) {
+            echo "\n";
+            echo "-------------------------------------------------------------------------------------\n";
+            echo "|| ¡ERROR! Usted ha ingresado un valor NO válido,                                  ||\n";
+            echo "|| verifique las opciones del menú nuevamente.                                     ||\n";
+            echo "-------------------------------------------------------------------------------------\n";
+            detenerEjecucion();
+        }
+    } while ($opcion < 1 || $opcion > 3);
+
+    echo "\n";
+
+    return $opcion;
+}
+
+function stringToBoolean($string)
+{
+    $boolean = false;
+    if ($string == "s") {
+        $boolean = true;
+    }
+    return $boolean;
+}
+
 /********************************************************************************/
 /***************************** PROGRAMA PRINCIPAL *******************************/
 /********************************************************************************/
@@ -128,28 +172,93 @@ do {
             detenerEjecucion();
             break;
         case 3:
-            // Agrega un nuevo pasajero al viaje actual
-            echo "Ingrese el nombre del pasajero: ";
-            $nombre = trim(fgets(STDIN));
-            echo "Ingrese el número de asiento: ";
-            $asiento = trim(fgets(STDIN));
-            echo "Ingrese el número de ticket: ";
-            $ticket = trim(fgets(STDIN));
+            $opcionMenuVenta = menuVenderViaje();
+            switch ($opcionMenuVenta) {
+                case 1:
+                    // Agrega un nuevo pasajero al viaje actual
+                    echo "Ingrese el nombre del pasajero: ";
+                    $nombre = trim(fgets(STDIN));
+                    echo "Ingrese el número de asiento: ";
+                    $asiento = trim(fgets(STDIN));
+                    echo "Ingrese el número de ticket: ";
+                    $ticket = trim(fgets(STDIN));
+                    $pasajero = new Pasajero($nombre, $asiento, $ticket);
+                    $vendido = $viaje->venderPasaje($pasajero);
+                    if ($vendido != 0) {
+                        echo "El pasajero se agregó con exito\n";
+                        echo "El pasaje costo: \n" . $vendido;
+                    } else {
+                        if (count($viaje->getPasajeros()) == $viaje->getCantMaxPasajeros()) {
+                            echo "ERROR: el viaje se encuentra en su capacidad máxima de pasajeros\n";
+                        } else {
+                            echo "ERROR: El pasajero ya se encuentra registrado dentro del viaje\n";
+                        }
+                    }
+                    detenerEjecucion();
+                    break;
+                case 2:
+                    // Agrega un nuevo pasajero VIP al viaje actual
+                    echo "Ingrese el nombre del pasajero: ";
+                    $nombre = trim(fgets(STDIN));
+                    echo "Ingrese el número de asiento: ";
+                    $asiento = trim(fgets(STDIN));
+                    echo "Ingrese el número de ticket: ";
+                    $ticket = trim(fgets(STDIN));
+                    echo "Ingrese el número de viajero frecuente: ";
+                    $numeroViajeroFracuente = trim(fgets(STDIN));
+                    echo "Ingrese la cantidad de millas de viajero frecuente: ";
+                    $cantidadMillasPasajero = trim(fgets(STDIN));
+                    $pasajero = new PasajeroVip($nombre, $asiento, $ticket, $numeroViajeroFracuente, $cantidadMillasPasajero);
+                    $vendido = $viaje->venderPasaje($pasajero);
+                    if ($vendido != 0) {
+                        echo "El pasajero se agregó con exito\n";
+                        echo "El pasaje costo: \n" . $vendido;
+                    } else {
+                        if (count($viaje->getPasajeros()) == $viaje->getCantMaxPasajeros()) {
+                            echo "ERROR: el viaje se encuentra en su capacidad máxima de pasajeros\n";
+                        } else {
+                            echo "ERROR: El pasajero ya se encuentra registrado dentro del viaje\n";
+                        }
+                    }
+                    detenerEjecucion();
+                    break;
+                case 3:
+                    // Agrega un nuevo pasajero especial al viaje actual
+                    echo "Ingrese el nombre del pasajero: ";
+                    $nombre = trim(fgets(STDIN));
+                    echo "Ingrese el número de asiento: ";
+                    $asiento = trim(fgets(STDIN));
+                    echo "Ingrese el número de ticket: ";
+                    $ticket = trim(fgets(STDIN));
+                    echo "Requiere silla de ruedas? (s/n): ";
+                    $string1 = trim(fgets(STDIN));
+                    $requiereSillaDeRuedas = stringToBoolean($string1);
 
-            $pasajero = new Pasajero($nombre, $asiento, $ticket);
-            $vendido = $viaje->venderPasaje($pasajero);
+                    echo "Requiere asistencia especial? (s/n):";
+                    $string2 = trim(fgets(STDIN));
+                    $requiereAsistencia = stringToBoolean($string2);
 
-            if ($vendido != 0) {
-                echo "El pasajero se agregó con exito\n";
-                echo "El pasaje costo: \n" . $vendido;
-            } else {
-                if (count($viaje->getPasajeros()) == $viaje->getCantMaxPasajeros()) {
-                    echo "ERROR: el viaje se encuentra en su capacidad máxima de pasajeros\n";
-                } else {
-                    echo "ERROR: El pasajero ya se encuentra registrado dentro del viaje\n";
-                }
+                    echo "Requiere alimentacion especial? (s/n):";
+                    $string3 = trim(fgets(STDIN));
+                    $requiereAlimentacionEspecial = stringToBoolean($string3);
+
+                    $pasajero = new PasajeroEspecial($nombre, $asiento, $ticket, $requiereSillaDeRuedas, $requiereAsistencia, $requiereAlimentacionEspecial);
+                    $vendido = $viaje->venderPasaje($pasajero);
+                    if ($vendido != 0) {
+                        echo "El pasajero se agregó con exito\n";
+                        echo "El pasaje costo: \n" . $vendido;
+                    } else {
+                        if (count($viaje->getPasajeros()) == $viaje->getCantMaxPasajeros()) {
+                            echo "ERROR: el viaje se encuentra en su capacidad máxima de pasajeros\n";
+                        } else {
+                            echo "ERROR: El pasajero ya se encuentra registrado dentro del viaje\n";
+                        }
+                    }
+                    detenerEjecucion();
+                    break;
+                default:
+                    break;
             }
-            detenerEjecucion();
             break;
         case 4:
             // Quita un pasajero del viaje por número de asiento

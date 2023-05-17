@@ -1,13 +1,11 @@
 <?php
 class Responsable
 {
-    // ATRIBUTOS
     private $numEmpleado;
     private $numLicencia;
     private $nombre;
     private $apellido;
 
-    // CONSTRUCTOR
     public function __construct($numEmpleadoNuevo, $numLicenciaNuevo, $nombreNuevo, $apellidoNuevo)
     {
         $this->numEmpleado = $numEmpleadoNuevo;
@@ -16,7 +14,6 @@ class Responsable
         $this->apellido = $apellidoNuevo;
     }
 
-    // MODIFICADORES
     public function setNumEmpleado($numEmpleadoNuevo)
     {
         $this->numEmpleado = $numEmpleadoNuevo;
@@ -34,7 +31,6 @@ class Responsable
         $this->apellido = $apellidoNuevo;
     }
 
-    // OBSERVADORES
     public function getNumEmpleado()
     {
         return $this->numEmpleado;
@@ -52,7 +48,6 @@ class Responsable
         return $this->apellido;
     }
 
-    // PROPIAS DE TIPO
     public function __toString()
     {
         $responsable = "\nNúmero de empleado: " . $this->numEmpleado .
